@@ -1,0 +1,46 @@
+server:
+  port: 9003
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    connection-timeout: 5s
+    username: user
+    password: password
+  application:
+    name: dispatcher-service
+#  config:
+#    import: "optional:configserver:"
+  cloud:
+    stream:
+      bindings:
+        packlabel-in-0:
+          destination: order-accepted
+          group: ${spring.application.name}
+        packlabel-out-0:
+          destination: order-dispatched
+    function:
+      definition: pack|label
+#    config:
+#      uri: http://localhost:8888
+#      request-connect-timeout: 5000 # 5s
+#      request-read-timeout: 5000 # 5s
+#      fail-fast: false # In production, set to true
+#      retry:
+#        max-attempts: 6
+#        initial-interval: 1000 # 1s
+#        max-interval: 2000 # 2s
+#        multiplier: 1.1
+
+logging:
+  level:
+    inc.evil: debug
+    org.zalando.logbook: trace

@@ -15,6 +15,22 @@ spring:
     baseline-on-migrate: true
   netty:
     leak-detection: paranoid
+  cloud:
+    function:
+      definition: dispatchOrder
+    stream:
+      rabbit:
+        bindings:
+          acceptOrder-out-0:
+            producer:
+              transacted: true
+      bindings:
+        dispatchOrder-in-0:
+          destination: order-dispatched
+          group: ${spring.application.name}
+        acceptOrder-out-0:
+          destination: order-accepted
+
 #   config:
 #     import: "optional:configserver:"
 #   cloud:
@@ -30,7 +46,12 @@ spring:
 #         multiplier: 1.1
   application:
     name: cns-order-service
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+    connection-timeout: 5s
 server:
   port: 9002
   shutdown: graceful
